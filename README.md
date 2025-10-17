@@ -101,11 +101,6 @@ This illustrates the logic for the Python-to-JavaScript communication.
 
 Python Server (bridge_server.py - Conceptual):
 
-code
-Python
-download
-content_copy
-expand_less
 # This would be a WebSocket server using a library like 'websockets'
 # pip install websockets
 
@@ -137,12 +132,6 @@ if __name__ == "__main__":
 
 JavaScript Client (bridge_client.html - Conceptual):
 
-code
-Html
-play_circle
-download
-content_copy
-expand_less
 <script>
     const socket = new WebSocket('ws://localhost:8765');
 
@@ -166,7 +155,6 @@ expand_less
 </script>
 
 Disclaimer: This is a highly experimental project. The features and file locations we are targeting are internal to Chrome and are not guaranteed to be stable. They can change or be removed at any time. This project is not affiliated with or endorsed by Google.
-
 
 Here is a README.md and project title that captures the spirit of this endeavor.
 
@@ -303,3 +291,132 @@ if __name__ == "__main__":
     extract_model_info()
 
 Disclaimer: This is an independent, experimental project for educational and research purposes. The internal APIs and model formats of Chrome are undocumented, subject to change without notice, and are not intended for external use. This project is not affiliated with or endorsed by Google.
+
+Of course. This is a fascinating and highly advanced project idea. A `README.md` for a project like this needs to be clear about the ambitious goal, the significant technical hurdles, and the specific expertise required.
+
+Here is a `README.md` and project title that captures the spirit of this endeavor.
+
+---
+
+# Project Heimdall: A Python Bridge for Gemini Nano
+
+**Our mission: To unlock Chrome's on-device Gemini Nano model, making its weights and architecture directly accessible from Python for advanced research and application development.**
+
+This project is named Heimdall, after the Bifröst bridge guardian, because our goal is to create a bridge between two distinct realms: the sandboxed, high-performance environment of the Chrome browser and the flexible, powerful machine learning ecosystem of Python.
+
+## The Vision: Supercharging On-Device AI
+
+Google has integrated a powerful version of its Gemini model, called **Gemini Nano**, directly into the Chrome browser. This model runs entirely locally, offering unparalleled speed, privacy, and zero API costs. However, it is currently only accessible through a sandboxed JavaScript API (`window.ai`).
+
+Project Heimdall aims to break down this barrier. We have two primary objectives:
+
+1.  **(The Ultimate Goal) Direct Python Inference:** To reverse-engineer the Gemini Nano model format and its surrounding logic, allowing the model files (`weights.bin`) to be loaded and run directly within a Python environment (e.g., using PyTorch or TensorFlow).
+2.  **(The Pragmatic Bridge) Python-to-WebGPU Bridging:** To create a seamless, high-performance bridge where Python scripts can send prompts to a headless Chrome instance, have the browser execute the model on the GPU via WebGPU, and stream the results back to Python.
+
+## Key Research Goal: Extending Gemini Nano's Context Window
+
+Directly accessing the model's weights and architecture in Python would be a game-changer for the open-source AI community. It would allow us to experiment with and extend the model's core capabilities.
+
+A primary research goal of this project is to implement techniques for efficient long-context modeling. For example, we aim to integrate an **Artificial Hippocampus Network (AHN)**, as described in the paper "[Artificial Hippocampus Networks for Efficient Long-Context Modeling](https://arxiv.org/pdf/2510.07318)" and prototyped in Martial Terran's educational [Qwen2-AHN implementation](https://huggingface.co/MartialTerran/Toy_Qwen2-AHN_ByteDance-Seed_AHN/blob/main/Qwen2-AHN_model_v1.0.1_Gemini2.5_fixed.py).
+
+By "jailbreaking" the model, we could potentially graft or integrate AHN-style layers onto the Gemini Nano graph, allowing it to handle vastly longer context windows than its default configuration, all while maintaining its on-device efficiency.
+
+## The Technical Hurdles: Why This Is Hard
+
+The files for Gemini Nano, located in Chrome's protected user data directory, are not standard model weights. To use them, we must overcome several significant challenges:
+
+1.  **Reconstructing Input Preprocessing:** The model requires a precisely formatted numerical tensor as input. We must reverse-engineer the logic Chrome uses to convert raw images, audio, and text into this format, including:
+    *   Exact image dimensions and resizing methods.
+    *   Color channel ordering (RGB vs. BGR).
+    *   Pixel value normalization schemes.
+
+2.  **Reconstructing Output Postprocessing:** The model's output is a tensor of raw probabilities (logits), not human-readable text. We need to reconstruct the entire decoding pipeline that turns these numbers into words. This involves understanding how to use auxiliary files like:
+    *   `.binarypb` (Protocol Buffers) for graph definitions.
+    *   `.fst` (Finite State Transducers) and `.syms` for language modeling and constraining output.
+
+This logic is currently embedded within Chrome's internal C++ source code.
+
+## How You Can Contribute
+
+This is a complex reverse-engineering project, and we need your help! We're looking for contributors with the following skills:
+
+*   **ML Reverse Engineers:** Individuals experienced in analyzing and converting proprietary model formats.
+*   **Chromium Source Code Experts:** Developers comfortable navigating the Chromium C++ codebase to find the pre/post-processing logic.
+*   **TensorFlow / PyTorch / ONNX Specialists:** Engineers who can help reconstruct the model graph and weight-loading mechanisms in Python.
+*   **WebGPU & Browser Automation Experts:** For our pragmatic bridging goal, we need developers who can build a high-performance Python-to-JavaScript communication layer using tools like Playwright and WebSockets.
+
+## Project Roadmap & First Steps
+
+### Phase 1: The WebGPU Bridge (Track 2)
+*   [ ] Develop a stable WebSocket-based server in Python.
+*   [ ] Create a minimal HTML/JS client that can receive prompts, execute them via `window.ai`, and stream results back.
+*   [ ] Bundle this into a user-friendly Python library.
+
+### Phase 2: The Direct Inference Engine (Track 1)
+*   [ ] **Locate and Analyze Preprocessing Code:** Dive into the Chromium source to find the functions that prepare data for the model.
+*   [ ] **Reverse-Engineer the `weights.bin` Format:** Analyze the binary format of the model weights and graph.
+*   [ ] **Rebuild the Decoder:** Re-implement the output postprocessing logic in Python to turn logits into text.
+*   [ ] **Build a Python Loader:** Create a Python class capable of loading the weights and running an inference step.
+
+### Getting Started: A Python Script to Find the Model
+
+This script will help you locate and copy the Gemini Nano model files from your local Chrome installation. This is the first step for any analysis.
+
+**`find_nano.py`**
+```python
+import os
+import shutil
+import platform
+import json
+
+def find_latest_model_version(model_base_path: str) -> str | None:
+    """Finds the directory with the highest version number."""
+    try:
+        subfolders = [f for f in os.listdir(model_base_path) if f.isdigit()]
+        return sorted(subfolders, key=int, reverse=True)[0] if subfolders else None
+    except (FileNotFoundError, IndexError):
+        return None
+
+def extract_model_info(destination_folder: str = "gemini_nano_files"):
+    """
+    Finds and copies the latest Gemini Nano model from Chrome's user data
+    directory and prints its metadata.
+    """
+    print("--- Project Heimdall: Gemini Nano Extractor ---")
+    if platform.system() != "Windows":
+        print("Error: This script is currently configured for Windows.")
+        return
+
+    local_app_data = os.getenv('LOCALAPPDATA')
+    model_source_base = os.path.join(local_app_data, 'Google', 'Chrome', 'User Data', 'OnDeviceModel')
+
+    version = find_latest_model_version(model_source_base)
+    if not version:
+        print("Status: Gemini Nano model not found. Ensure the feature is enabled in chrome://flags.")
+        return
+
+    source_path = os.path.join(model_source_base, version)
+    print(f"Found model version {version} at: {source_path}")
+
+    try:
+        os.makedirs(destination_folder, exist_ok=True)
+        shutil.copytree(source_path, destination_folder, dirs_exist_ok=True)
+        print(f"Successfully copied model files to '{destination_folder}' directory.")
+        
+        metadata_path = os.path.join(destination_folder, 'model.json')
+        with open(metadata_path, 'r') as f:
+            metadata = json.load(f)
+            print("\n--- Model Metadata ---")
+            print(json.dumps(metadata, indent=2))
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    extract_model_info()
+```
+
+---
+
+**Disclaimer:** This is an independent, experimental project for educational and research purposes. The internal APIs and model formats of Chrome are undocumented, subject to change without notice, and are not intended for external use. This project is not affiliated with or endorsed by Google.
+```
