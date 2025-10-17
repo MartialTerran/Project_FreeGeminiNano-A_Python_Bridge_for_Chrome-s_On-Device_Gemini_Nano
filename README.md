@@ -1,7 +1,11 @@
 # Project_FreeGeminiNano-A_Python_Bridge_for_Chrome-s_On-Device_Gemini_Nano
 An ambitious open-source initiative to unlock the full potential of Google's Gemini Nano model by making it directly accessible to Python developers. We aim to bridge the gap between the model's secure, sandboxed environment within Chrome and the powerful, flexible world of Python and its machine learning ecosystem.
 
-The goal is to break the model out of its sandbox for greater flexibility and research, and extension such as implementing cutting-edge techniques like **Artificial Hippocampus Networks** (as described in [arXiv:2510.07318](https://arxiv.org/pdf/2510.07318)) to efficiently manage and expand the model's effective context length, overcoming the current token limits.
+The goal is to break the model out of its sandbox for greater flexibility and research, and extension such as implementing cutting-edge techniques like **Artificial Hippocampus Networks** (as described in [arXiv:2510.07318](https://arxiv.org/pdf/2510.07318)) to efficiently manage and expand the model's effective context length, overcoming the current token limits.  See e.g., 
+"Learn Artificial Hippocampus Networks (AHN) with a Pure PyTorch Qwen2 Model" at:
+https://huggingface.co/MartialTerran/Toy_Qwen2-AHN_ByteDance-Seed_AHN/blob/main/README.md
+
+https://huggingface.co/MartialTerran/Toy_Qwen2-AHN_ByteDance-Seed_AHN/edit/main/Qwen2-AHN_model_v1.0.1_Gemini2.5_fixed.py 
 
 ## The Vision: On-Device AI, On Your Terms
 
