@@ -5,7 +5,7 @@
 
 **Our mission: To unlock Chrome's on-device Gemini Nano model, making its weights and architecture directly accessible from Python for advanced research and application development.**
 
-This project is named Heimdall, after the Bifröst bridge guardian, because our goal is to create a bridge between two distinct realms: the sandboxed, high-performance environment of the Chrome browser and the flexible, powerful machine learning ecosystem of Python.
+This project is code-named Project Heimdall, after the Bifröst bridge guardian, because our goal is to create a bridge between two distinct realms: the sandboxed, high-performance environment of the Chrome browser and the flexible, powerful machine learning ecosystem of Python.
 
 The goal is to break the model out of its sandbox for greater flexibility, research, and extension. This includes implementing cutting-edge techniques like **Artificial Hippocampus Networks (AHN)** to efficiently manage and expand the model's effective context length, overcoming the current token limits.
 
